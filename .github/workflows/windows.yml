@@ -13,12 +13,27 @@ jobs:
           python-version: "3.12"
       - run: python -m pip install requests pyinstaller
       - run: python -m PyInstaller --onefile --windowed --name Publicador publicar.py
-      - run: |
-          if (-not (Get-Command makensis -ErrorAction SilentlyContinue)) { choco install nsis -y }
-          & "${env:ProgramFiles(x86)}\NSIS\makensis.exe" instalador.nsi
+      - name: Instalar NSIS
+        continue-on-error: true
+        run: |
+          $nsis = "${env:ProgramFiles(x86)}\NSIS\makensis.exe"
+          for ($i = 1; $i -le 3 -and -not (Test-Path $nsis); $i++) {
+            choco install nsis -y --no-progress
+            if (-not (Test-Path $nsis)) { Start-Sleep -Seconds 15 }
+          }
+          if (-not (Test-Path $nsis)) {
+            winget install --id NSIS.NSIS -e --silent --accept-package-agreements --accept-source-agreements
+          }
+      - name: Crear instalador
+        continue-on-error: true
+        run: |
+          $nsis = @("${env:ProgramFiles(x86)}\NSIS\makensis.exe", "$env:ProgramFiles\NSIS\makensis.exe") | Where-Object { Test-Path $_ } | Select-Object -First 1
+          if (-not $nsis) { throw "No se encontro NSIS" }
+          & $nsis instalador.nsi
       - uses: actions/upload-artifact@v4
         with:
           name: Publicador-Windows
+          if-no-files-found: error
           path: |
             Publicador-Setup.exe
             dist/Publicador.exe
