@@ -1,0 +1,20 @@
+{
+  "_ayuda": "Datos de tus apps de desarrollador (se crean una sola vez). Ver LEEME.md",
+  "meta": {
+    "app_id": "",
+    "app_secret": ""
+  },
+  "x": {
+    "client_id": "",
+    "client_secret": ""
+  },
+  "linkedin": {
+    "client_id": "",
+    "client_secret": "",
+    "version": "202510"
+  },
+  "telegram": {
+    "bot_token": "",
+    "chat_id": "@tu_canal"
+  }
+}

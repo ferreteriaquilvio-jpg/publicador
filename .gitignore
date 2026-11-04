@@ -1,0 +1,6 @@
+config.json
+cuentas.json
+dist/
+build/
+*.spec
+__pycache__/
